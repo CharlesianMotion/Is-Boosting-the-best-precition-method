@@ -1,0 +1,28 @@
+---
+title: "R Notebook"
+output:
+  pdf_document: default
+  html_notebook: default
+---
+
+First, we load the dataset and get every package we need ready.
+```{r}
+df = read.csv('rehosp.csv')
+test = read.csv("test_rehosp.csv")
+
+library(gbm)
+```
+
+Then we the gbm function to build a boosting method model. We name it "bm".
+```{r}
+bm = gbm(hospital~., data = df, distribution = 'adaboost', 
+         n.trees = 500, interaction.depth = 2, shrinkage = 0.01, verbose = F)
+```
+
+Now let's see how well it performed.
+```{r}
+pdtn =predict(bm,newdata = test, n.trees = 500)
+sqrt(mean((pdtn-test$hospital)^2))
+```
+
+
